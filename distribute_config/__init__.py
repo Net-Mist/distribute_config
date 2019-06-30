@@ -63,6 +63,10 @@ class Config:
             Config.__instance = Config.__Config()
 
     @classmethod
+    def clear(cls):
+        cls.__instance = Config.__Config()
+
+    @classmethod
     def _set_namespace(cls, name):
         cls.__instance.namespace = name
 
@@ -97,19 +101,19 @@ class Config:
             variables = variables[sub_path]
 
         if type(variables) == Variable:
-            return variables.value
+            return variables.get_value()
         else:
             return variables
 
     @classmethod
-    def set_val(cls, name, val):
+    def set_var(cls, name, val):
         path = name.split(".")
         variables = cls.__instance.variables
         for sub_path in path:
             variables = variables[sub_path]
 
         assert type(variables) == Variable
-        variables.value = val
+        variables.set_value(val)
 
     @classmethod
     def get_dict(cls):
@@ -145,10 +149,19 @@ class Config:
         for var in os.environ:
             path = ".".join(var.lower().split("__"))
             try:
-                cls.set_val(path, os.environ[var])
+                cls.set_var(path, os.environ[var])
                 print("Load env variable", var)
             except KeyError:
                 pass
+
+        #3
+        print(vars(args))
+        for key in vars(args):
+            if key == "c":
+                continue
+            cls.set_var(key, vars(args)[key])
+
+
 
     @staticmethod
     def load_dict(loading_dict, variables):

@@ -28,6 +28,11 @@ class Variable:
             TypeError: if the type of value doesn't matche the type of the variable
         """
 
+        if self.type != str and type(value) == str:
+            # Try to convert
+            if self.type in [int, float]:
+                value = float(value)
+
         if self.type == int:
             # In the special case value is a int encoded in float, should convert it before loading
             if int(value) == value:
