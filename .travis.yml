@@ -1,12 +1,17 @@
 dist: xenial
 language: python
 python:
-  - "3.5"
-  - "3.6"
-  - "3.7"
+- '3.5'
+- '3.6'
+- '3.7'
 install:
-  - pip install coveralls
-  - pip install -r requirements.txt
+- pip install coveralls
+- pip install -r requirements.txt
 script:
-  - coverage run --source=./ setup.py test
-  - coveralls
+- coverage run --source=./ setup.py test
+- coveralls
+deploy:
+  provider: pypi
+  user: Net-Mist
+  password:
+    secure: ihEQbDIxvZs3CJCiZ3HT0Ht/km/iRf9z58jis+OZQA8QORRQ9PB3XVYuntFTcptL2zi2V0dVEyjJZbsYL7wiSN/xGq0e03WJ1UuAu0J/1WF8Lk4ZHDtaDH53dtv1VB6dLGv7+LfjpUOan09k0l1bsWXuiRqid94n04pjdjjNwtmRWICc5khBVDOt4OGXGf3ztLLJSFAuKnFnD/qPXe8RBIhxOhRUq+py9xDJoAZKJBgQRT4LNoWXV+N1sp1hN1i1HgsL2dcW3NvQihMnzmdrktKri8JI24Bwjhl2wqhnRGYMPD5AKT3Bc+qEZZaYMlBMxdNGO2JPtkELFBeCArq63QEhoAfXGCH4+4WbwBs5N/td4qSzwwZyANtL3glZ2Zq4qUmwdTy3OWz4Sa7sYh/JCcEQW2rICVbNgJUpe6ZT81DoKjvmhrAtX9b5FPdTns/r3fdhz+F7nR2nLpEGfSvdAlIEUWssni9cH6c3d8pcviXfrpGSbjKl0byLc3z+viyK/dB04rJn9dsz3nXDj7N8HxtPGdUoNH4/EZQbeQDE63v+po+Kh5lda7FKGFbk8+9NIwX8Vk/K91Ks07BEIa10ES7zHT2fuKTbQ76k4zlPYBxtJ33MJDojGn9biTWN2iSkxdkkv5UUqBYbb+AdWRz4Xkkbw7xRtC+wwmKnbIHyAL4=
