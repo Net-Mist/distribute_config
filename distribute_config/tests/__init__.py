@@ -13,7 +13,7 @@ class TestConfig(TestCase):
         Config.define_int("test_int_float_valid", 5., "A test for int with a float var")
 
         # But not float
-        with self.assertRaises(TypeError):
+        with self.assertRaises(ValueError):
             Config.define_int("test_int_float_not_valid", 5.5, "A test for int with a float var")
 
         # Can't assign twice the same variable
@@ -21,6 +21,35 @@ class TestConfig(TestCase):
             Config.define_int("test_int", 5, "A test for int")
 
         self.assertDictEqual(Config.get_dict(), {'test_int': 5, 'test_int_float_valid': 5})
+
+    def test_define_float(self):
+        Config.clear()
+        Config.define_float("test", 5, "A test for int")
+        Config.define_float("test_f", 5., "A test for int with a float var")
+        Config.define_float("test_f2", 5.6, "A test for int with a float var")
+        Config.define_float("test_str", "5.6", "A test for int with a float var")
+
+        # But not float
+        with self.assertRaises(ValueError):
+            Config.define_float("test_int_float_not_valid", "bob", "A test for int with a float var")
+
+        self.assertDictEqual(Config.get_dict(), {'test': 5.0, 'test_f': 5.0, 'test_f2': 5.6, 'test_str': 5.6})
+
+    def test_define_str(self):
+        Config.clear()
+        Config.define_str("test", 5, "A test for int")
+        Config.define_str("test_f", 5., "A test for int with a float var")
+        Config.define_str("test_f2", 5.6, "A test for int with a float var")
+        Config.define_str("test_str", "5.6", "A test for int with a float var")
+
+        self.assertDictEqual(Config.get_dict(), {'test': "5", 'test_f': "5.0", 'test_f2': "5.6", 'test_str': "5.6"})
+
+    def test_define_list(self):
+        Config.clear()
+        Config.define_float_list("test_float", [5., 6, "7."], "A test for float")
+        Config.define_int_list("test_int_float_valid", [5., 5], "A test for int with a float var")
+
+        self.assertDictEqual(Config.get_dict(), {'test_float': [5.0, 6.0, 7.0], 'test_int_float_valid': [5, 5]})
 
     def test_namespace(self):
         Config.clear()

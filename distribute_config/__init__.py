@@ -16,12 +16,10 @@ class Config:
             self.parser = argparse.ArgumentParser(description='Arguments')
             self.parser.add_argument("-c", type=str, default="config.yml", help="relative path to config file")
 
-        def define_var(self, name, default, description, type):
+        def define_var(self, name, default, description, type, is_list=False):
             if self.namespace:
                 name = self.namespace + "." + name
-                variable = Variable(name, default, description, type)
-            else:
-                variable = Variable(name, default, description, type)
+            variable = Variable(name, default, description, type, is_list)
             self.__add_variables(variable)
 
             self.parser.add_argument("--" + variable.name, type=type, help=variable.description)
@@ -74,24 +72,25 @@ class Config:
     def define_int(cls, var_name, default, description):
         cls.__instance.define_var(var_name, default, description, int)
 
-    def __str__(self):
-        str = "Config\n"
-        str += Config.__print_sub_variables(self.__instance.variables, 0)
-        return str
+    @classmethod
+    def define_float(cls, var_name, default, description):
+        cls.__instance.define_var(var_name, default, description, float)
 
-    @staticmethod
-    def __print_sub_variables(variables, sub_level: int):
-        output_str = ""
-        for key in variables:
-            if type(variables[key]) == dict:
-                output_str += key + ":\n"
-                output_str += Config.__print_sub_variables(
-                    variables[key], sub_level + 1)
-            else:
-                output_str += "  " * sub_level + \
-                    key + ": " + \
-                    str(variables[key].value) + "\n"
-        return output_str
+    @classmethod
+    def define_str(cls, var_name, default, description):
+        cls.__instance.define_var(var_name, default, description, str)
+
+    @classmethod
+    def define_str_list(cls, var_name, default, description):
+        cls.__instance.define_var(var_name, default, description, str, is_list=True)
+
+    @classmethod
+    def define_int_list(cls, var_name, default, description):
+        cls.__instance.define_var(var_name, default, description, int, is_list=True)
+
+    @classmethod
+    def define_float_list(cls, var_name, default, description):
+        cls.__instance.define_var(var_name, default, description, float, is_list=True)
 
     @classmethod
     def get_var(cls, name):
@@ -154,14 +153,12 @@ class Config:
             except KeyError:
                 pass
 
-        #3
+        # 3
         print(vars(args))
         for key in vars(args):
             if key == "c":
                 continue
             cls.set_var(key, vars(args)[key])
-
-
 
     @staticmethod
     def load_dict(loading_dict, variables):
