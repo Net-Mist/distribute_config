@@ -62,8 +62,9 @@ class Config:
         if not Config.__instance:
             Config.__instance = Config.__Config()
 
-    def _ConfigNamespace__set_namespace(self, name):
-        self.__instance.namespace = name
+    @classmethod
+    def _set_namespace(cls, name):
+        cls.__instance.namespace = name
 
     @classmethod
     def define_int(cls, var_name, default, description):
@@ -157,21 +158,30 @@ class Config:
             else:
                 variables[key].value = loading_dict[key]
 
+    @classmethod
+    def _append_namespace(cls, name):
+        if cls.__instance.namespace == "":
+            cls._set_namespace(name)
+        else:
+            cls._set_namespace(cls.__instance.namespace + "." + name)
 
+    @classmethod
+    def _pop_namespace(cls):
+        cls._set_namespace(".".join(cls.__instance.namespace.split(".")[:-1]))
 
+    @classmethod
+    def namespace(cls, name):
+        class _ConfigNamespace:
+            def __init__(self, name):
+                cls._append_namespace(name)
 
+            def __enter__(self):
+                return self
 
-class ConfigNamespace:
-    def __init__(self, name):
-        config = Config()
-        config.__set_namespace(name)
+            def __exit__(self, type, value, traceback):
+                cls._pop_namespace()
 
-    def __enter__(self):
-        return self
-
-    def __exit__(self, type, value, traceback):
-        config = Config()
-        config.__set_namespace("")
+        return _ConfigNamespace(name)
 
 
 Config()
