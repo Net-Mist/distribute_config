@@ -1,3 +1,4 @@
+import logging
 import os
 import sys
 import argparse
@@ -134,10 +135,10 @@ class Config:
 
         config_file_name = args.c
         if not os.path.exists(config_file_name):
-            print("Create config file", config_file_name, "with default value")
+            logging.info(f"Create config file {config_file_name} with default value")
             cls.write_conf(config_file_name)
-            print("Please update config file and restart")
-            print("You can find information on all parameters by running with --help")
+            logging.info("Please update config file and restart")
+            logging.info("You can find information on all parameters by running with --help")
 
         # 1
         with open(config_file_name, 'r') as stream:
@@ -149,14 +150,14 @@ class Config:
             path = ".".join(var.lower().split("__"))
             try:
                 cls.set_var(path, os.environ[var])
-                print("Load env variable", var)
+                logging.info(f"Load env variable {var}")
             except KeyError:
                 pass
 
         # 3
-        print(vars(args))
+        logging.info(f"args are {vars(args)}")
         for key in vars(args):
-            if key == "c":
+            if key == "c" or vars(args)[key] is None:
                 continue
             cls.set_var(key, vars(args)[key])
 

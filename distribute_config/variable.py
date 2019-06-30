@@ -31,7 +31,7 @@ class Variable:
         """
 
         if self.is_list:
-            assert type(value) == list
+            assert type(value) == list, str(value) + " is not a list"
             end_list = []
             for element in value:
                 end_list.append(self._convert_type(element))
