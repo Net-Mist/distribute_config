@@ -1,2 +1,3 @@
 __pycache__
 .vscode
+distribute_config.egg-info
