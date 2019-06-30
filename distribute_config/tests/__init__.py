@@ -48,8 +48,9 @@ class TestConfig(TestCase):
         Config.clear()
         Config.define_float_list("test_float", [5., 6, "7."], "A test for float")
         Config.define_int_list("test_int_float_valid", [5., 5], "A test for int with a float var")
+        Config.define_str_list("str", [], "A test for int with a float var")
 
-        self.assertDictEqual(Config.get_dict(), {'test_float': [5.0, 6.0, 7.0], 'test_int_float_valid': [5, 5]})
+        self.assertDictEqual(Config.get_dict(), {'test_float': [5.0, 6.0, 7.0], 'test_int_float_valid': [5, 5], "str": []})
 
     def test_namespace(self):
         Config.clear()

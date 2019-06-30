@@ -166,7 +166,7 @@ class Config:
             if type(loading_dict[key]) == dict:
                 Config.load_dict(loading_dict[key], variables[key])
             else:
-                variables[key].value = loading_dict[key]
+                variables[key].set_value(loading_dict[key])
 
     @classmethod
     def _append_namespace(cls, name):
