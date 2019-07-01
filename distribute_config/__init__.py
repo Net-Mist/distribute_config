@@ -15,7 +15,7 @@ class Config:
             self.variables = {}
             self.namespace = ""
             self.parser = argparse.ArgumentParser(description='Arguments')
-            self.parser.add_argument("-c", type=str, default="config.yml", help="relative path to config file")
+            self.parser.add_argument("-c", type=str, default="", help="relative path to config file")
 
         def define_var(self, name, default, description, type, is_list=False):
             if self.namespace:
@@ -125,7 +125,7 @@ class Config:
             yaml.dump(cls.get_dict(), f, default_flow_style=False)
 
     @classmethod
-    def load_conf(cls):
+    def load_conf(cls, config_file_name="config.yml"):
         """This method load the conf in 3 steps:
         1. Load the config.yml file if exist, or load a file specified by -c option when starting the program
         2. Load the env variables 
@@ -133,7 +133,8 @@ class Config:
         """
         args = cls.__instance.parser.parse_args()
 
-        config_file_name = args.c
+        if args.c :
+            config_file_name = args.c
         if not os.path.exists(config_file_name):
             logging.info(f"Create config file {config_file_name} with default value")
             cls.write_conf(config_file_name)
