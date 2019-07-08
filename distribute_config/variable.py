@@ -2,7 +2,7 @@ class Variable:
     """A config variable
     """
 
-    def __init__(self, name, default, description, type, is_list=False):
+    def __init__(self, name, default, description, type, is_list=False, possible_values=None):
         # Variable name, used as key in yaml, or to get variable via command line and env varaibles
         self.name = name
 
@@ -15,6 +15,7 @@ class Variable:
 
         # The value of the variable
         self._value = None
+        self._possible_values = possible_values
         self.set_value(default)
 
     def get_value(self):
@@ -29,6 +30,8 @@ class Variable:
         Raises:
             TypeError: if the type of value doesn't matche the type of the variable
         """
+        if type(self._possible_values) is list:
+            assert value in self._possible_values, f"{value} need to be inside {self._possible_values}"
 
         if self.is_list:
             assert type(value) == list, str(value) + " is not a list"

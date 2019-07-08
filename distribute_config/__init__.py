@@ -17,21 +17,25 @@ class Config:
             self.parser = argparse.ArgumentParser(description='Arguments')
             self.parser.add_argument("-c", type=str, default="", help="relative path to config file")
 
-        def define_var(self, name, default, description, type, is_list=False):
+        def define_var(self, name, default, description, type, is_list=False, possible_values=None):
             if self.namespace:
                 name = self.namespace + "." + name
-            variable = Variable(name, default, description, type, is_list)
+            variable = Variable(name, default, description, type, is_list, possible_values)
             self.__add_variables(variable)
 
-            if default:
-                # Add an argument to desactivate the arg
-                # TODO check the doc
-                self.parser.add_argument("--no" + variable.name, type=type, help=variable.description)
+            if type == bool:
+                if default:
+                    # Add an argument to desactivate the arg
+                    # TODO check the doc
+                    self.parser.add_argument("--no" + variable.name, type=type, help=variable.description)
+                else:
+                    # Add an argument to activate the arg
+                    # TODO check the doc
+                    self.parser.add_argument("--" + variable.name, type=type, help=variable.description)
+            elif type(possible_values) == list:
+                self.parser.add_argument("--" + variable.name, type=type, help=f"{variable.description}, need to be in {possible_values}")
             else:
-                # Add an argument to activate the arg
-                # TODO check the doc
                 self.parser.add_argument("--" + variable.name, type=type, help=variable.description)
-
 
         def __add_variables(self, variable: Variable):
             """add variable to variables dict and create path corresponding with the variable name. 
@@ -104,6 +108,13 @@ class Config:
     @classmethod
     def define_bool(cls, var_name, default, description):
         cls.__instance.define_var(var_name, default, description, bool)
+
+    @classmethod
+    def define_choose(cls, var_name, default, possible_values, desciption):
+        cls.__instance.define_var(var_name, default, desciption, str, possible_values=possible_values)
+
+
+
 
     @classmethod
     def get_var(cls, name):
