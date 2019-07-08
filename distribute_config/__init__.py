@@ -23,7 +23,15 @@ class Config:
             variable = Variable(name, default, description, type, is_list)
             self.__add_variables(variable)
 
-            self.parser.add_argument("--" + variable.name, type=type, help=variable.description)
+            if default:
+                # Add an argument to desactivate the arg
+                # TODO check the doc
+                self.parser.add_argument("--no" + variable.name, type=type, help=variable.description)
+            else:
+                # Add an argument to activate the arg
+                # TODO check the doc
+                self.parser.add_argument("--" + variable.name, type=type, help=variable.description)
+
 
         def __add_variables(self, variable: Variable):
             """add variable to variables dict and create path corresponding with the variable name. 
@@ -92,6 +100,10 @@ class Config:
     @classmethod
     def define_float_list(cls, var_name, default, description):
         cls.__instance.define_var(var_name, default, description, float, is_list=True)
+
+    @classmethod
+    def define_bool(cls, var_name, default, description):
+        cls.__instance.define_var(var_name, default, description, bool)
 
     @classmethod
     def get_var(cls, name):

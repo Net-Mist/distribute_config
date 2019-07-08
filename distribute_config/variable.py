@@ -40,9 +40,24 @@ class Variable:
             self._value = self._convert_type(value)
 
     def _convert_type(self, value):
+        # str and float values can be parsed without issues in all cases
         if self.type in [str, float]:
             return self.type(value)
-        # Now self.type == int
+        if self.type == int:
+            return self._convert_type_int(value)
+        if self.type == bool:
+            return self._convert_type_bool(value)
+        return value
+
+    def _convert_type_int(self, value):
+        """convert a value in any data type to int
+
+        Args:
+            value: a value read from the json file or from python or from the command line
+
+        Raises:
+            ValueError: [description]
+        """
         if type(value) == str:
             value = float(value)
         if type(value) == float:
@@ -50,5 +65,13 @@ class Variable:
                 value = int(value)
             else:
                 raise ValueError("value should have type {} but have type {}".format(self.type, type(value)))
-        # now  type(value) == int
         return value
+
+    def _convert_type_bool(self, value):
+        if type(value) == str:
+            if value.lower() == "true":
+                return True
+            if value.lower() == "false":
+                return False
+            raise ValueError(f"Can't parse boolean {value}")
+        return bool(value)

@@ -44,6 +44,13 @@ class TestConfig(TestCase):
 
         self.assertDictEqual(Config.get_dict(), {'test': "5", 'test_f': "5.0", 'test_f2': "5.6", 'test_str': "5.6"})
 
+    def test_def_ne_bool(self):
+        Config.clear()
+        Config.define_bool("test", 0, "int")
+        Config.define_bool("test2", "false", "str")
+        Config.define_bool("test3", "truE", "str")
+
+
     def test_define_list(self):
         Config.clear()
         Config.define_float_list("test_float", [5., 6, "7."], "A test for float")
