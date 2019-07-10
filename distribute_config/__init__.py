@@ -125,11 +125,16 @@ class Config:
             yaml.dump(cls.get_dict(), f, default_flow_style=False)
 
     @classmethod
-    def load_conf(cls, config_file_name="config.yml"):
+    def load_conf(cls, config_file_name="config.yml", auto_update_yml=True):
         """This method load the conf in 3 steps:
         1. Load the config.yml file if exist, or load a file specified by -c option when starting the program
         2. Load the env variables 
         3. parse the python commande line
+
+        Args:
+            config_file_name: default name of the config file. can by overwitten by -c option
+            auto_update_yml: If true then add in the yml new vars
+
         """
         args = cls.__instance.parser.parse_args()
 
@@ -146,6 +151,9 @@ class Config:
             yml_content = yaml.safe_load(stream)
         cls.load_dict(yml_content, cls.__instance.variables)
 
+        if auto_update_yml:
+            cls.write_conf(config_file_name)
+
         # 2
         for var in os.environ:
             path = ".".join(var.lower().split("__"))
@@ -156,11 +164,11 @@ class Config:
                 pass
 
         # 3
-        logging.info(f"args are {vars(args)}")
         for key in vars(args):
             if key == "c" or vars(args)[key] is None:
                 continue
             cls.set_var(key, vars(args)[key])
+            logging.info(f"Load variable {vars(args)[key]} from command line args")
 
     @staticmethod
     def load_dict(loading_dict, variables):
