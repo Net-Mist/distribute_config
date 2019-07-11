@@ -44,11 +44,18 @@ class TestConfig(TestCase):
 
         self.assertDictEqual(Config.get_dict(), {'test': "5", 'test_f': "5.0", 'test_f2': "5.6", 'test_str': "5.6"})
 
-    def test_def_ne_bool(self):
+    def test_define_bool(self):
         Config.clear()
         Config.define_bool("test", 0, "int")
         Config.define_bool("test2", "false", "str")
         Config.define_bool("test3", "truE", "str")
+        self.assertDictEqual(Config.get_dict(), {'test': False, 'test2': False, 'test3': True})
+
+    def test_define_enum(self):
+        Config.clear()
+        Config.define_enum("test", "a", ["a", "b"], "a or b")
+        self.assertDictEqual(Config.get_dict(), {"test": "a"})
+
 
 
     def test_define_list(self):

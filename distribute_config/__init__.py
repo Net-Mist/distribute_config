@@ -32,7 +32,7 @@ class Config:
                     # Add an argument to activate the arg
                     # TODO check the doc
                     self.parser.add_argument("--" + variable.name, type=type, help=variable.description)
-            elif type(possible_values) == list:
+            elif possible_values is not None:
                 self.parser.add_argument("--" + variable.name, type=type, help=f"{variable.description}, need to be in {possible_values}")
             else:
                 self.parser.add_argument("--" + variable.name, type=type, help=variable.description)
@@ -110,7 +110,7 @@ class Config:
         cls.__instance.define_var(var_name, default, description, bool)
 
     @classmethod
-    def define_choose(cls, var_name, default, possible_values, desciption):
+    def define_enum(cls, var_name, default, possible_values, desciption):
         cls.__instance.define_var(var_name, default, desciption, str, possible_values=possible_values)
 
 
@@ -148,7 +148,7 @@ class Config:
             yaml.dump(cls.get_dict(), f, default_flow_style=False)
 
     @classmethod
-    def load_conf(cls, config_file_name="config.yml", auto_update_yml=True):
+    def load_conf(cls, config_file_name="config.yml", auto_update_yml=True, no_conf_file=False):
         """This method load the conf in 3 steps:
         1. Load the config.yml file if exist, or load a file specified by -c option when starting the program
         2. Load the env variables 
@@ -163,16 +163,18 @@ class Config:
 
         if args.c :
             config_file_name = args.c
-        if not os.path.exists(config_file_name):
-            logging.info(f"Create config file {config_file_name} with default value")
-            cls.write_conf(config_file_name)
-            logging.info("Please update config file and restart")
-            logging.info("You can find information on all parameters by running with --help")
+        if not no_conf_file:
+            if not os.path.exists(config_file_name):
+                logging.info(f"Create config file {config_file_name} with default value")
+                cls.write_conf(config_file_name)
+                logging.info("Please update config file and restart")
+                logging.info("You can find information on all parameters by running with --help")
 
         # 1
-        with open(config_file_name, 'r') as stream:
-            yml_content = yaml.safe_load(stream)
-        cls.load_dict(yml_content, cls.__instance.variables)
+        if not no_conf_file:
+            with open(config_file_name, 'r') as stream:
+                yml_content = yaml.safe_load(stream)
+            cls.load_dict(yml_content, cls.__instance.variables)
 
         if auto_update_yml:
             cls.write_conf(config_file_name)
