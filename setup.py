@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="distribute_config",
-    version="0.0.4",
+    version="0.1.0",
     author="Sébastien IOOSS",
     author_email="archimist.linux@gmail.com",
     description="A package to handle multi-source distributed configuration",
@@ -19,5 +19,8 @@ setuptools.setup(
         "Operating System :: OS Independent",
     ],
     test_suite="nose.collector",
-    tests_require=['nose']
+    tests_require=['nose'],
+    install_requires=[
+        'PyYAML',
+    ],
 )
