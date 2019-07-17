@@ -176,8 +176,8 @@ class Config:
                 yml_content = yaml.safe_load(stream)
             cls.load_dict(yml_content, cls.__instance.variables)
 
-        if auto_update_yml:
-            cls.write_conf(config_file_name)
+            if auto_update_yml:
+                cls.write_conf(config_file_name)
 
         # 2
         for var in os.environ:
