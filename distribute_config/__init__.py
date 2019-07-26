@@ -20,18 +20,17 @@ class Config:
         def define_var(self, name, default, description, type, is_list=False, possible_values=None):
             if self.namespace:
                 name = self.namespace + "." + name
+                name = name.lower()
             variable = Variable(name, default, description, type, is_list, possible_values)
             self.__add_variables(variable)
 
             if type == bool:
                 if default:
                     # Add an argument to desactivate the arg
-                    # TODO check the doc
-                    self.parser.add_argument("--no" + variable.name, type=type, help=variable.description)
+                    self.parser.add_argument("--no" + variable.name, dest=variable.name, action='store_false', help=variable.description)
                 else:
                     # Add an argument to activate the arg
-                    # TODO check the doc
-                    self.parser.add_argument("--" + variable.name, type=type, help=variable.description)
+                    self.parser.add_argument("--" + variable.name, dest=variable.name, action='store_true', help=variable.description)
             elif possible_values is not None:
                 self.parser.add_argument("--" + variable.name, type=type, help=f"{variable.description}, need to be in {possible_values}")
             else:

@@ -56,8 +56,6 @@ class TestConfig(TestCase):
         Config.define_enum("test", "a", ["a", "b"], "a or b")
         self.assertDictEqual(Config.get_dict(), {"test": "a"})
 
-
-
     def test_define_list(self):
         Config.clear()
         Config.define_float_list("test_float", [5., 6, "7."], "A test for float")
@@ -103,3 +101,30 @@ class TestConfig(TestCase):
         Config.load_conf()
         self.assertEqual(Config.get_var("v1"), 1)
         self.assertEqual(Config.get_var("nm.v2"), 2)
+
+    @mock.patch('argparse.ArgumentParser.parse_args',
+                return_value=argparse.Namespace(**{"n1.v1": 2, "n1.v2": 3, "n1.v3": False}, c="conf.yml"))
+    def test_load_conf_3(self, mock_args):
+        Config.clear()
+        with Config.namespace("n1"):
+            Config.define_int("v1", 1, "var")
+            Config.define_int("v2", 2, "var")
+            Config.define_bool("V3", True, "turn me false")
+        Config.load_conf(no_conf_file=True)
+        self.assertEqual(Config.get_var("n1.v1"), 2)
+        self.assertEqual(Config.get_var("n1.v2"), 3)
+        self.assertEqual(Config.get_var("n1.v3"), False)
+
+    @mock.patch.dict(os.environ, {"N1__V3": "false"})
+    @mock.patch('argparse.ArgumentParser.parse_args',
+                return_value=argparse.Namespace(**{"n1.v1": 2, "n1.v2": 3}, c="conf.yml"))
+    def test_load_conf_4(self, mock_args):
+        Config.clear()
+        with Config.namespace("n1"):
+            Config.define_int("v1", 1, "var")
+            Config.define_int("v2", 2, "var")
+            Config.define_bool("V3", True, "turn me false")
+        Config.load_conf(no_conf_file=True)
+        self.assertEqual(Config.get_var("n1.v1"), 2)
+        self.assertEqual(Config.get_var("n1.v2"), 3)
+        self.assertEqual(Config.get_var("n1.v3"), False)

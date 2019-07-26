@@ -9,9 +9,9 @@ A package to handle multi-source distributed configuration
 
 This package handle the problem of multi-source configuration in python. For a python program containing a set of configuration variables,
 this package will populate the values of these configuration variables by looking for a yaml configuration file, then will overwrite the values of the 
-variable by looking for matching environment variables and then, if the program was started with some arguments, will once again overwrite the values of the configuration by loading these variables
+variables by looking for matching environment variables and then, if the program was started with some arguments, will once again overwrite the values of the configuration by loading these variables
 
-Moreover, this package allow you to define configuration variables in multiple python files, using a namespace system so you can't accidentally break other part of the configuration, so the configuration stay near the code that needs it and you can update your configuration by just importing new python files 
+Moreover, this package allow you to define configuration variables in multiple python files, using a namespace system so you can't accidentally break other parts of the configuration, so the configuration stay near the code that needs it and you can update your configuration by just importing new python files. 
 
 ## Example
 
@@ -87,3 +87,9 @@ set1:
 ## Features
 - The config support single variables (int, float, str, bool) but also list (int, float, str) and enum
 - When loading configuration using Config.load_conf(), you can specify the name of the config file you want to create or load, and you can also specify if you don't want a config file to be create or if you want to update the content of the current config file (usefull when adding new features)
+
+## Tests
+nosetest -v
+
+
+

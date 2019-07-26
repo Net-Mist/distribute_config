@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="distribute_config",
-    version="0.1.0",
+    version="0.1.1",
     author="Sébastien IOOSS",
     author_email="archimist.linux@gmail.com",
     description="A package to handle multi-source distributed configuration",
