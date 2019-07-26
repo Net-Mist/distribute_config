@@ -24,16 +24,12 @@ class Config:
             variable = Variable(name, default, description, type, is_list, possible_values)
             self.__add_variables(variable)
 
-            if type == bool:
-                if default:
-                    # Add an argument to desactivate the arg
-                    self.parser.add_argument("--no" + variable.name, dest=variable.name, action='store_false', help=variable.description)
-                else:
-                    # Add an argument to activate the arg
-                    self.parser.add_argument("--" + variable.name, dest=variable.name, action='store_true', help=variable.description)
-            elif possible_values is not None:
+            if possible_values is not None:
                 self.parser.add_argument("--" + variable.name, type=type, help=f"{variable.description}, need to be in {possible_values}")
             else:
+                # Bool is a special case : we want to use str to specify the value. 
+                if type == bool:
+                    type = str
                 self.parser.add_argument("--" + variable.name, type=type, help=variable.description)
 
         def __add_variables(self, variable: Variable):
@@ -112,9 +108,6 @@ class Config:
     def define_enum(cls, var_name, default, possible_values, desciption):
         cls.__instance.define_var(var_name, default, desciption, str, possible_values=possible_values)
 
-
-
-
     @classmethod
     def get_var(cls, name):
         path = name.split(".")
@@ -160,7 +153,7 @@ class Config:
         """
         args = cls.__instance.parser.parse_args()
 
-        if args.c :
+        if args.c:
             config_file_name = args.c
         if not no_conf_file:
             if not os.path.exists(config_file_name):
@@ -183,7 +176,7 @@ class Config:
             path = ".".join(var.lower().split("__"))
             try:
                 cls.set_var(path, os.environ[var])
-                logging.info(f"Load env variable {var}")
+                logging.info(f"Load env variable {var}={os.environ[var]}")
             except KeyError:
                 pass
 
@@ -191,8 +184,13 @@ class Config:
         for key in vars(args):
             if key == "c" or vars(args)[key] is None:
                 continue
+
+            # # Special case for store_true and store_false
+            # if cls.get_var(key).type == bool:
+
+
             cls.set_var(key, vars(args)[key])
-            logging.info(f"Load variable {vars(args)[key]} from command line args")
+            logging.info(f"Load variable {key} = {vars(args)[key]} from command line args")
 
     @staticmethod
     def load_dict(loading_dict, variables):
