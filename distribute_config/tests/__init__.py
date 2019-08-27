@@ -151,6 +151,6 @@ class TestConfig(TestCase):
                 return_value=argparse.Namespace(c="conf.yml"))
     def test_load_bool(self, mock_args):
         Config.clear()
-        Config.define_bool("VAR", True, "turn me false")
+        Config.define_bool("VaR", True, "turn me false")
         Config.load_conf(no_conf_file=True)
-        self.assertEqual(Config.get_var("VAR"), False)
+        self.assertEqual(Config.get_var("VAr"), False)
