@@ -20,7 +20,7 @@ class Config:
         def define_var(self, name, default, description, type, is_list=False, possible_values=None):
             if self.namespace:
                 name = self.namespace + "." + name
-                name = name.lower()
+            name = name.lower()
             variable = Variable(name, default, description, type, is_list, possible_values)
             self.__add_variables(variable)
 
@@ -113,7 +113,7 @@ class Config:
         path = name.split(".")
         variables = cls.__instance.variables
         for sub_path in path:
-            variables = variables[sub_path]
+            variables = variables[sub_path.lower()]
 
         if type(variables) == Variable:
             return variables.get_value()

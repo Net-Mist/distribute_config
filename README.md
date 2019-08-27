@@ -89,7 +89,7 @@ set1:
 - When loading configuration using Config.load_conf(), you can specify the name of the config file you want to create or load, and you can also specify if you don't want a config file to be create or if you want to update the content of the current config file (usefull when adding new features)
 
 ## Tests
-nosetest -v
+nosetests -v
 
 
 

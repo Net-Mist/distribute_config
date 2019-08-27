@@ -18,6 +18,9 @@ class Variable:
         self._possible_values = possible_values
         self.set_value(default)
 
+    def __str__(self):
+        return f"name: {self.name}"
+
     def get_value(self):
         return self._value
 

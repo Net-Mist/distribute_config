@@ -130,6 +130,7 @@ class TestConfig(TestCase):
         self.assertEqual(Config.get_var("n1.v2"), 3)
         self.assertEqual(Config.get_var("n1.v3"), False)
 
+
     @mock.patch.dict(os.environ, {"N1__V3": "false"})
     @mock.patch('argparse.ArgumentParser.parse_args',
                 return_value=argparse.Namespace(**{"n1.v1": 2, "n1.v2": 3}, c="conf.yml"))
@@ -144,3 +145,12 @@ class TestConfig(TestCase):
         self.assertEqual(Config.get_var("n1.v1"), 2)
         self.assertEqual(Config.get_var("n1.v2"), 3)
         self.assertEqual(Config.get_var("n1.v3"), False)
+
+    @mock.patch.dict(os.environ, {"VAR": "false"})
+    @mock.patch('argparse.ArgumentParser.parse_args',
+                return_value=argparse.Namespace(c="conf.yml"))
+    def test_load_bool(self, mock_args):
+        Config.clear()
+        Config.define_bool("VAR", True, "turn me false")
+        Config.load_conf(no_conf_file=True)
+        self.assertEqual(Config.get_var("VAR"), False)
