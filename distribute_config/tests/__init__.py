@@ -85,7 +85,8 @@ class TestConfig(TestCase):
                 return_value=argparse.Namespace(v1=2, v2=3, c="conf.yml"))
     def test_load_conf(self, mock_args):
         Config.clear()
-        os.remove("conf.yml")
+        if os.path.exists("conf.yml"):
+            os.remove("conf.yml")
         Config.define_int("v1", 1, "var")
         Config.define_int("v2", 2, "var")
         Config.load_conf()
@@ -136,7 +137,8 @@ class TestConfig(TestCase):
                 return_value=argparse.Namespace(**{"n1.v1": 2, "n1.v2": 3}, c="conf.yml"))
     def test_load_conf_5(self, mock_args):
         Config.clear()
-        os.remove("conf.yml")
+        if os.path.exists("conf.yml"):
+            os.remove("conf.yml")
         with Config.namespace("n1"):
             Config.define_int("v1", 1, "var")
             Config.define_int("v2", 2, "var")
