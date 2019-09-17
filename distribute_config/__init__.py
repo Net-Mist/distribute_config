@@ -28,7 +28,8 @@ class Config:
                 self.parser.add_argument("--" + variable.name, type=type, help=f"{variable.description}, need to be in {possible_values}")
             else:
                 # Bool is a special case : we want to use str to specify the value. 
-                if type == bool:
+                # In case of list, we want to enter str and parse manualy
+                if type == bool or is_list:
                     type = str
                 self.parser.add_argument("--" + variable.name, type=type, help=variable.description)
 
