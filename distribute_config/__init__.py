@@ -140,7 +140,7 @@ class Config:
             yaml.dump(cls.get_dict(), f, default_flow_style=False)
 
     @classmethod
-    def load_conf(cls, config_file_name="config.yml", auto_update_yml=True, no_conf_file=False):
+    def load_conf(cls, config_file_name="", auto_update_yml=False):
         """This method load the conf in 3 steps:
         1. Load the config.yml file if exist, or load a file specified by -c option when starting the program
         2. Load the env variables 
@@ -149,13 +149,12 @@ class Config:
         Args:
             config_file_name: default name of the config file. can by overwitten by -c option
             auto_update_yml: If true then add in the yml new vars
-
         """
         args = cls.__instance.parser.parse_args()
 
         if args.c:
             config_file_name = args.c
-        if not no_conf_file:
+        if config_file_name:
             if not os.path.exists(config_file_name):
                 logging.info(f"Create config file {config_file_name} with default value")
                 cls.write_conf(config_file_name)
@@ -163,7 +162,7 @@ class Config:
                 logging.info("You can find information on all parameters by running with --help")
 
         # 1
-        if not no_conf_file:
+        if config_file_name:
             with open(config_file_name, 'r') as stream:
                 yml_content = yaml.safe_load(stream)
             cls.load_dict(yml_content, cls.__instance.variables)
@@ -184,11 +183,6 @@ class Config:
         for key in vars(args):
             if key == "c" or vars(args)[key] is None:
                 continue
-
-            # # Special case for store_true and store_false
-            # if cls.get_var(key).type == bool:
-
-
             cls.set_var(key, vars(args)[key])
             logging.info(f"Load variable {key} = {vars(args)[key]} from command line args")
 

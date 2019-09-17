@@ -37,7 +37,11 @@ class Variable:
             assert value in self._possible_values, f"{value} need to be inside {self._possible_values}"
 
         if self.is_list:
-            assert type(value) == list, str(value) + " is not a list"
+            assert type(value) in [str, list], f"{value} need to be a list or a string"
+
+            if type(value) == str:
+                value = value.split(",")
+            
             end_list = []
             for element in value:
                 end_list.append(self._convert_type(element))
