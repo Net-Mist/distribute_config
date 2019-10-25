@@ -4,6 +4,7 @@ import sys
 import argparse
 import yaml
 from typing import Dict
+from argparse import RawTextHelpFormatter
 
 from .variable import Variable
 
@@ -14,7 +15,7 @@ class Config:
             # variables maps the "path" of a variable to an instance of class Variable
             self.variables = {}
             self.namespace = ""
-            self.parser = argparse.ArgumentParser(description='Arguments')
+            self.parser = argparse.ArgumentParser(description='Arguments', formatter_class=RawTextHelpFormatter)
             self.parser.add_argument("-c", type=str, default="", help="relative path to config file")
 
         def define_var(self, name, default, description, type, is_list=False, possible_values=None):
